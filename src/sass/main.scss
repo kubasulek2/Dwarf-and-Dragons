@@ -1,0 +1,51 @@
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+
+
+.main{
+  height: 900px;
+  width: 100%;
+  background-image: url("../img/2cd43b_4479efe9fc1443e48e90654411efdcd3_mv2.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: right -100px top 150px;
+  background-color: bisque;
+  display: flex;
+  flex-wrap: wrap;
+
+}
+h1{
+  padding: 50px 30px;
+  text-shadow: 2px 2px 2px black;
+}
+
+.sidebar{
+  height: 700px;
+  width: 350px;
+  border: 2px solid darkslategray;
+  border-radius: 3px;
+  margin: 20px;
+  background-image: url("../img/Webp.net-resizeimage (1).png");
+
+}
+
+.header{
+  width: 100%;
+  height:120px;
+  background-color: steelblue;
+
+}
+#myCanvas{
+  border-radius: 3px;
+  border: 2px solid darkslategray;
+  margin: 20px;
+
+}
+.wrapper{
+  display: flex;
+  height: 740px;
+}
