@@ -3,16 +3,18 @@
   padding: 0px;
   box-sizing: border-box;
 }
-
+body{
+  height: 100vh;
+}
 
 
 .main{
-  height: 900px;
+  height: 100%;
   width: 100%;
   background-image: url("../img/2cd43b_4479efe9fc1443e48e90654411efdcd3_mv2.png");
   background-repeat: no-repeat;
   background-size: contain;
-  background-position: right -100px top 150px;
+  background-position: left 1320px top 150px;
   background-color: bisque;
   display: flex;
   flex-wrap: wrap;
@@ -26,23 +28,27 @@ h1{
 .sidebar{
   height: 700px;
   width: 350px;
-  border: 2px solid darkslategray;
-  border-radius: 3px;
-  margin: 20px;
+  margin: 10px;
   background-image: url("../img/Webp.net-resizeimage (1).png");
+
+}
+.canva{
+  background-image: url("../img/zforest.png");
+  background-position: 0px -30px;
 
 }
 
 .header{
   width: 100%;
-  height:120px;
+  height:100px;
   background-color: steelblue;
 
 }
 #myCanvas{
-  border-radius: 3px;
+  border-radius: 5px;
   border: 2px solid darkslategray;
-  margin: 20px;
+  margin: 10px;
+  box-shadow: 5px 5px 5px black;
 
 }
 .wrapper{
