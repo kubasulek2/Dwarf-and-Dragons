@@ -11,6 +11,9 @@ class Game extends React.Component {
         this.state ={
             monsters:[],
             heroLevel: 1,
+            heroLife: 4,
+            heroStrength:4,
+            heroXp: 0,
             cX: 0,
             cY: 250,
             imX: 0,
@@ -20,6 +23,7 @@ class Game extends React.Component {
             detectionLeft: false,
             detectionUp: false,
             detectionDown: false,
+            detectMonster: false,
             level: 1
 
 
@@ -43,31 +47,53 @@ class Game extends React.Component {
         )
     }
 
+    fight = ()=>{
+        let ctx = this.canvas.getContext('2d');
+        let heroThrow = Math.ceil(Math.random()*10+this.state.heroStrength);
+        let monsterThrow =  Math.ceil(Math.random()*10);
+
+        if(heroThrow > monsterThrow){
+            alert("Wygrałeś walkę, zdobywasz doświadczenie")
+            this.setState({
+                detectMonster: false,
+                heroXp: this.state.heroXp+50
+            })
+        }else{
+            alert("Przegrałeś walke, tracisz punkt życia")
+            this.setState({
+                detectMonster: false,
+                heroLife: this.state.heroLife -1
+            })
+        }
+
+
+    };
+
 
     drawMonsters =  ()=> {
         let ctx = this.canvas.getContext('2d');
         let monsterImg = new Image();
         monsterImg.src = imgs[1];
 
-        let monstersAmount = Math.ceil(Math.random()*3)+Math.floor(this.state.level);
+        let monstersAmount = Math.ceil(Math.random()*3)+Math.floor(this.state.level/2);
 
         let monstersArr =[];
 
         monsterImg.onload= () =>{
             for(let i = 0; i < monstersAmount; i++){
-                let x = Math.round(Math.random()*(92-10)+10)*10;
+                let x = Math.round(Math.random()*(91-10)+10)*10;
                 let y = Math.round(Math.random()*(62-25)+25)*10;
 
                 if(i > 0){
 
                     if(x !== monstersArr[i-1].positionX && y !== monstersArr[i-1].positionY){
 
-                        ctx.drawImage(monsterImg,x,y,70,70);
+                        ctx.drawImage(monsterImg,x,y,80,80);
                         monstersArr.push({positionX: x, positionY:y});
 
                     }
                 }else{
-                    ctx.drawImage(monsterImg,x,y,70,70);
+                    ctx.drawImage(monsterImg,x,y,80,80);
                     monstersArr.push({positionX: x, positionY:y});
                 }
 
@@ -78,6 +104,76 @@ class Game extends React.Component {
         this.setState({monsters: monstersArr})
 
     };
+
+    detectMonsterRight(){
+
+        for(let i = 0; i < this.state.monsters.length; i++){
+                if(this.state.cX === this.state.monsters[i].positionX - 70 && (this.state.cY < this.state.monsters[i].positionY+70&&
+                        this.state.cY > this.state.monsters[i].positionY-80)){
+
+                    this.setState({
+                        detectMonster: true
+                    })
+                }
+
+
+            }
+
+    };
+
+    detectMonsterLeft(){
+
+        for(let i = 0; i < this.state.monsters.length; i++){
+            if(this.state.cX === this.state.monsters[i].positionX + 70 && (this.state.cY < this.state.monsters[i].positionY+70&&
+                    this.state.cY > this.state.monsters[i].positionY-80)){
+
+                this.setState({
+                    detectMonster: true
+                })
+            }
+
+
+        }
+
+    };
+
+    detectMonsterUp(){
+
+        for(let i = 0; i < this.state.monsters.length; i++){
+            console.log("monsterX: ",this.state.monsters[i].positionX);
+            console.log("myX: ",this.state.cX);
+            if(this.state.cY === this.state.monsters[i].positionY + 70 && (this.state.cX < this.state.monsters[i].positionX+80&&
+                    this.state.cX > this.state.monsters[i].positionX-80)){
+
+                this.setState({
+                    detectMonster: true
+                })
+            }
+
+
+        }
+
+    };
+
+    detectMonsterDown(){
+
+        for(let i = 0; i < this.state.monsters.length; i++){
+            console.log("monsterX: ",this.state.monsters[i].positionX);
+            console.log("myX: ",this.state.cX);
+            if(this.state.cY === this.state.monsters[i].positionY - 70 && (this.state.cX < this.state.monsters[i].positionX+80&&
+                    this.state.cX > this.state.monsters[i].positionX-80)){
+
+                this.setState({
+                    detectMonster: true
+                })
+            }
+
+
+        }
+
+    };
+
+
 
 
     draw(hero) {
@@ -107,9 +203,9 @@ class Game extends React.Component {
         const canvaWidth = 1000;
         const canvaHeight = 700;
         this.setState({
-            detectionRight: this.state.cX > canvaWidth - this.state.imSize-20? true: false,
-            detectionLeft: this.state.cX < 20? true: false,
-            detectionDown: this.state.cY > canvaHeight - this.state.imSize-20? true: false,
+            detectionRight: this.state.cX > canvaWidth - this.state.imSize-10? true: false,
+            detectionLeft: this.state.cX < 10? true: false,
+            detectionDown: this.state.cY > canvaHeight - this.state.imSize-10? true: false,
             detectionUp: this.state.cY < 250? true: false,
         })
     }
@@ -125,18 +221,32 @@ class Game extends React.Component {
 
         document.addEventListener("keydown", (e)=> {
 
-            if(e.keyCode === 40&&!this.state.detectionDown){
+            if(e.keyCode === 40&&!this.state.detectionDown && !this.state.detectMonster){
                 //w dol
-                this.move(160,0,1,heroImg)
-            }else if(e.keyCode === 38&&!this.state.detectionUp){
+                this.detectMonsterDown()
+                if(!this.state.detectMonster){
+                    this.move(160,0,1,heroImg)}
+
+            }else if(e.keyCode === 38&&!this.state.detectionUp && !this.state.detectMonster){
                 // w gore
-                this.move(0,0,-1,heroImg)
+                this.detectMonsterUp()
+                if(!this.state.detectMonster){
+                    this.move(0,0,-1,heroImg)}
+
             }else if(e.keyCode === 39 &&!this.state.detectionRight){
                 //w prawo
-                this.move(80,1,0,heroImg)
-            }else if(e.keyCode === 37 &&!this.state.detectionLeft){
+
+                this.detectMonsterRight()
+
+                if(!this.state.detectMonster){
+                    this.move(80,1,0,heroImg)}
+
+            }else if(e.keyCode === 37 &&!this.state.detectionLeft && !this.state.detectMonster){
                 //w lewo
-                this.move(240,-1,0,heroImg)
+                this.detectMonsterLeft()
+                if(!this.state.detectMonster){
+                    this.move(240,-1,0,heroImg)
+                }
             }
 
 
