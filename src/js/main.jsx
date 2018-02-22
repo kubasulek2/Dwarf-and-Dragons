@@ -10,6 +10,7 @@ class Game extends React.Component {
         super(props)
         this.state ={
             monsters:[],
+            detectedMonster:{positionX: 0, positionY: 0},
             heroLevel: 1,
             heroLife: 4,
             heroStrength:4,
@@ -51,17 +52,26 @@ class Game extends React.Component {
         let ctx = this.canvas.getContext('2d');
         let heroThrow = Math.ceil(Math.random()*10+this.state.heroStrength);
         let monsterThrow =  Math.ceil(Math.random()*10);
+        let positionX = this.state.detectedMonster.positionX;
+        let positionY = this.state.detectedMonster.positionY;
+
+
+        this.setState({
+            detectMonster: false,
+        })
 
         if(heroThrow > monsterThrow){
-            alert("Wygrałeś walkę, zdobywasz doświadczenie")
+            ctx.clearRect(positionX, positionY, 80, 80)
+            alert("Wygrałeś walkę, zdobywasz doświadczenie");
             this.setState({
-                detectMonster: false,
-                heroXp: this.state.heroXp+50
+                heroXp: this.state.heroXp+50,
+                monsters: this.state.monsters.filter((e)=>{
+                    return e.positionX !== positionX && e.positionY !== positionY
+                })
             })
         }else{
-            alert("Przegrałeś walke, tracisz punkt życia")
+            alert("Przegrałeś walke, tracisz punkt życia");
             this.setState({
-                detectMonster: false,
                 heroLife: this.state.heroLife -1
             })
         }
@@ -108,11 +118,12 @@ class Game extends React.Component {
     detectMonsterRight(){
 
         for(let i = 0; i < this.state.monsters.length; i++){
-                if(this.state.cX === this.state.monsters[i].positionX - 70 && (this.state.cY < this.state.monsters[i].positionY+70&&
+                if(this.state.cX === this.state.monsters[i].positionX - 80 && (this.state.cY < this.state.monsters[i].positionY+70&&
                         this.state.cY > this.state.monsters[i].positionY-80)){
 
                     this.setState({
-                        detectMonster: true
+                        detectMonster: true,
+                        detectedMonster: {positionX: this.state.monsters[i].positionX, positionY: this.state.monsters[i].positionY}
                     })
                 }
 
@@ -124,11 +135,12 @@ class Game extends React.Component {
     detectMonsterLeft(){
 
         for(let i = 0; i < this.state.monsters.length; i++){
-            if(this.state.cX === this.state.monsters[i].positionX + 70 && (this.state.cY < this.state.monsters[i].positionY+70&&
+            if(this.state.cX === this.state.monsters[i].positionX + 80 && (this.state.cY < this.state.monsters[i].positionY+70&&
                     this.state.cY > this.state.monsters[i].positionY-80)){
 
                 this.setState({
-                    detectMonster: true
+                    detectMonster: true,
+                    detectedMonster: {positionX: this.state.monsters[i].positionX, positionY: this.state.monsters[i].positionY}
                 })
             }
 
@@ -142,11 +154,12 @@ class Game extends React.Component {
         for(let i = 0; i < this.state.monsters.length; i++){
             console.log("monsterX: ",this.state.monsters[i].positionX);
             console.log("myX: ",this.state.cX);
-            if(this.state.cY === this.state.monsters[i].positionY + 70 && (this.state.cX < this.state.monsters[i].positionX+80&&
+            if(this.state.cY === this.state.monsters[i].positionY + 80 && (this.state.cX < this.state.monsters[i].positionX+80&&
                     this.state.cX > this.state.monsters[i].positionX-80)){
 
                 this.setState({
-                    detectMonster: true
+                    detectMonster: true,
+                    detectedMonster: {positionX: this.state.monsters[i].positionX, positionY: this.state.monsters[i].positionY}
                 })
             }
 
@@ -160,11 +173,12 @@ class Game extends React.Component {
         for(let i = 0; i < this.state.monsters.length; i++){
             console.log("monsterX: ",this.state.monsters[i].positionX);
             console.log("myX: ",this.state.cX);
-            if(this.state.cY === this.state.monsters[i].positionY - 70 && (this.state.cX < this.state.monsters[i].positionX+80&&
+            if(this.state.cY === this.state.monsters[i].positionY - 80 && (this.state.cX < this.state.monsters[i].positionX+80&&
                     this.state.cX > this.state.monsters[i].positionX-80)){
 
                 this.setState({
-                    detectMonster: true
+                    detectMonster: true,
+                    detectedMonster: {positionX: this.state.monsters[i].positionX, positionY: this.state.monsters[i].positionY}
                 })
             }
 
@@ -225,13 +239,20 @@ class Game extends React.Component {
                 //w dol
                 this.detectMonsterDown()
                 if(!this.state.detectMonster){
-                    this.move(160,0,1,heroImg)}
+                    this.move(160,0,1,heroImg)
+                }
+                else{
+                    this.fight()
+                }
 
             }else if(e.keyCode === 38&&!this.state.detectionUp && !this.state.detectMonster){
                 // w gore
                 this.detectMonsterUp()
                 if(!this.state.detectMonster){
-                    this.move(0,0,-1,heroImg)}
+                    this.move(0,0,-1,heroImg)
+                }else{
+                    this.fight()
+                }
 
             }else if(e.keyCode === 39 &&!this.state.detectionRight){
                 //w prawo
@@ -239,13 +260,18 @@ class Game extends React.Component {
                 this.detectMonsterRight()
 
                 if(!this.state.detectMonster){
-                    this.move(80,1,0,heroImg)}
+                    this.move(80,1,0,heroImg)
+                }else{
+                    this.fight()
+                }
 
             }else if(e.keyCode === 37 &&!this.state.detectionLeft && !this.state.detectMonster){
                 //w lewo
                 this.detectMonsterLeft()
                 if(!this.state.detectMonster){
                     this.move(240,-1,0,heroImg)
+                }else{
+                    this.fight()
                 }
             }
 
