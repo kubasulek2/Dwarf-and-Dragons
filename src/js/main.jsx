@@ -178,8 +178,7 @@ class Game extends React.Component {
     detectMonsterUp(){
 
         for(let i = 0; i < this.state.monsters.length; i++){
-            console.log("monsterX: ",this.state.monsters[i].positionX);
-            console.log("myX: ",this.state.cX);
+
             if(this.state.cY === this.state.monsters[i].positionY + 80 && (this.state.cX < this.state.monsters[i].positionX+80&&
                     this.state.cX > this.state.monsters[i].positionX-80)){
 
@@ -197,8 +196,7 @@ class Game extends React.Component {
     detectMonsterDown(){
 
         for(let i = 0; i < this.state.monsters.length; i++){
-            console.log("monsterX: ",this.state.monsters[i].positionX);
-            console.log("myX: ",this.state.cX);
+
             if(this.state.cY === this.state.monsters[i].positionY - 80 && (this.state.cX < this.state.monsters[i].positionX+80&&
                     this.state.cX > this.state.monsters[i].positionX-80)){
 
@@ -251,11 +249,31 @@ class Game extends React.Component {
         })
     }
 
+    heroLevelUp(){
+        if(this.state.heroXp >= 200 + this.state.heroLevel*100){
+            alert("Zdobywasz poziom");
+            let chooseBenefit = prompt('Choose: "Str" or "Life"' );
+
+            if(chooseBenefit === "Str"){
+                this.setState({
+                    heroLevel: this.state.heroLevel + 1,
+                    heroStrength: this.state.heroStrength +1
+                })
+            }else if(chooseBenefit === "Life"){
+                this.setState({
+                    heroLevel: this.state.heroLevel + 1,
+                    heroLife: this.state.heroLife + 1
+                })
+            }
+        }
+    }
+
     componentDidMount(){
         this.gameInterval = setInterval(()=>{
             if(this.state.monsters.length === 0){
-                console.log(this.state.monsters);
+
                 this.drawMonsters();
+                this.heroLevelUp()
             }
         },50);
 
@@ -328,6 +346,7 @@ class Sidebar extends React.Component {
         return(
             <div className="sidebar">
                 <h1>Name: {this.props.info.heroName}</h1>
+                <h1>Level: {this.props.info.heroLevel}</h1>
                 <h1>Life: {this.props.info.heroLife}</h1>
                 <h1>Strength: {this.props.info.heroStrength}</h1>
                 <h1>Xp: {this.props.info.heroXp}</h1>
