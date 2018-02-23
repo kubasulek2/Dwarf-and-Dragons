@@ -3,14 +3,18 @@ import ReactDOM from 'react-dom';
 import { createStore } from 'redux';
 import { connect, Provider } from 'react-redux';
 require('../sass/main.scss');
+//const music = require('../music/Tribal Ritual.wav')
 import imgs from './images'
-console.log(imgs);
+
+
 class Game extends React.Component {
     constructor(props){
-        super(props)
+        super(props);
         this.state ={
+            gameLoader: true,
             monsters:[],
             detectedMonster:{positionX: 0, positionY: 0},
+            heroName: '',
             heroLevel: 1,
             heroLife: 4,
             heroStrength:4,
@@ -25,7 +29,6 @@ class Game extends React.Component {
             detectionUp: false,
             detectionDown: false,
             detectMonster: false,
-            level: 1
 
 
         }
@@ -34,19 +37,42 @@ class Game extends React.Component {
 
 
     render(){
+        const loadscreen = <div className='loadscreen'>
+            <div className="loadscreen-container">
+                <h1>Name:</h1><input ref={element => this.heroName = element} value={this.state.heroName} onChange={this.createName}/>
+                <button onClick={this.startGame}>Click</button>
+            </div>
+        </div>;
+
+
+
+
+
+
         return(
             <div className="main">
-                <div className="header"></div>
-
+                {this.state.gameLoader && loadscreen}
+                <Header />
                 <div className="wrapper">
-                    <canvas className="canva" width="1000" height="700" id="myCanvas" ref={(canv) => { this.canvas = canv; }}></canvas> {/*mam this.canvas*/}
-                    <div className="sidebar">
-                        <h1>Name: Lothar</h1>
-                    </div>
+                    <canvas width="1000" height="700" id="myCanvas" ref={(canv) => { this.canvas = canv; }}></canvas>
+                    <Sidebar info={this.state}/>
                 </div>
             </div>
         )
     }
+    startGame = ()=>{
+        if(this.heroName.value.length > 0){
+            this.setState({
+                gameLoader: false
+            })
+        }
+    }
+
+    createName =(e) =>{
+        this.setState({
+            heroName: e.currentTarget.value
+        })
+    };
 
     fight = ()=>{
         let ctx = this.canvas.getContext('2d');
@@ -85,7 +111,7 @@ class Game extends React.Component {
         let monsterImg = new Image();
         monsterImg.src = imgs[1];
 
-        let monstersAmount = Math.ceil(Math.random()*3)+Math.floor(this.state.level/2);
+        let monstersAmount = Math.ceil(Math.random()*3)+Math.floor(this.state.heroLevel/2);
 
         let monstersArr =[];
 
@@ -118,17 +144,17 @@ class Game extends React.Component {
     detectMonsterRight(){
 
         for(let i = 0; i < this.state.monsters.length; i++){
-                if(this.state.cX === this.state.monsters[i].positionX - 80 && (this.state.cY < this.state.monsters[i].positionY+70&&
-                        this.state.cY > this.state.monsters[i].positionY-80)){
+            if(this.state.cX === this.state.monsters[i].positionX - 80 && (this.state.cY < this.state.monsters[i].positionY+70&&
+                    this.state.cY > this.state.monsters[i].positionY-80)){
 
-                    this.setState({
-                        detectMonster: true,
-                        detectedMonster: {positionX: this.state.monsters[i].positionX, positionY: this.state.monsters[i].positionY}
-                    })
-                }
-
-
+                this.setState({
+                    detectMonster: true,
+                    detectedMonster: {positionX: this.state.monsters[i].positionX, positionY: this.state.monsters[i].positionY}
+                })
             }
+
+
+        }
 
     };
 
@@ -200,6 +226,7 @@ class Game extends React.Component {
 
 
     }
+
     move(imX,cX,cY, hero) {
         const ctx = this.canvas.getContext('2d');
         ctx.clearRect(this.state.cX, this.state.cY, this.state.imSize, this.state.imSize,);
@@ -225,13 +252,19 @@ class Game extends React.Component {
     }
 
     componentDidMount(){
+        this.gameInterval = setInterval(()=>{
+            if(this.state.monsters.length === 0){
+                console.log(this.state.monsters);
+                this.drawMonsters();
+            }
+        },50);
+
         let heroImg = new Image();
         heroImg.src = imgs[3];
-
         heroImg.onload=()=>{
             this.draw(heroImg);
         };
-        this.drawMonsters();
+
 
         document.addEventListener("keydown", (e)=> {
 
@@ -267,7 +300,7 @@ class Game extends React.Component {
 
             }else if(e.keyCode === 37 &&!this.state.detectionLeft && !this.state.detectMonster){
                 //w lewo
-                this.detectMonsterLeft()
+                this.detectMonsterLeft();
                 if(!this.state.detectMonster){
                     this.move(240,-1,0,heroImg)
                 }else{
@@ -279,14 +312,40 @@ class Game extends React.Component {
         })
 
     }
+    componentWillUnmount(){
+        clearInterval(this.gameInterval)
+    }
 
 };
 
 
 
+class Sidebar extends React.Component {
+    constructor(props){
+        super(props)
+    }
+    render(){
+        return(
+            <div className="sidebar">
+                <h1>Name: {this.props.info.heroName}</h1>
+                <h1>Life: {this.props.info.heroLife}</h1>
+                <h1>Strength: {this.props.info.heroStrength}</h1>
+                <h1>Xp: {this.props.info.heroXp}</h1>
+            </div>
+        )
+    }
+};
 
-
-
+class Header extends React.Component {
+    constructor(props){
+        super(props)
+    }
+    render(){
+        return(
+            <div className="header"></div>
+        )
+    }
+};
 
 
 
@@ -308,12 +367,4 @@ document.addEventListener("DOMContentLoaded", function () {
         <Game/>,
         document.getElementById("app")
     )
-
-
-
-
-
-
-
-
 });

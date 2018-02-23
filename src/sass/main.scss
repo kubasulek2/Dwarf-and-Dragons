@@ -1,3 +1,5 @@
+
+
 * {
   margin: 0px;
   padding: 0px;
@@ -11,13 +13,9 @@ body{
 .main{
   height: 100%;
   width: 100%;
-  background-image: url("../img/2cd43b_4479efe9fc1443e48e90654411efdcd3_mv2.png");
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: left 1320px top 150px;
   background-color: bisque;
-  display: flex;
-  flex-wrap: wrap;
+ /* display: flex;
+  flex-wrap: wrap;*/
 
 }
 h1{
@@ -26,32 +24,43 @@ h1{
 }
 
 .sidebar{
-  height: 700px;
-  width: 350px;
+  height: 722px;
+  width: 360px;
   margin: 10px;
-  background-image: url("../img/Webp.net-resizeimage (1).png");
-
-}
-.canva{
-  background-image: url("../img/zforest.png");
-  background-position: 0px -30px;
+  background-image: url("../img/Webp.net-resizeimage(1).jpg");
+  background-size: 360px 730px;
+  border: 3px solid black;
+  box-shadow: 2px 2px 2px black;
+  border-radius: 5px;
+  background-color: bisque;
 
 }
 
 .header{
   width: 100%;
   height:100px;
-  background-color: steelblue;
+  background-color: darkslategray;
 
 }
 #myCanvas{
   border-radius: 5px;
-  border: 2px solid darkslategray;
+  border: 3px solid black;
   margin: 10px;
-  box-shadow: 5px 5px 5px black;
+  box-shadow: 2px 2px 2px black;
+  background-image: url("../img/zforest.png");
+  background-position: 0px -30px;
+
 
 }
 .wrapper{
   display: flex;
   height: 740px;
+}
+
+.loadscreen{
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  background-color: dimgrey;
 }
