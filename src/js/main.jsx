@@ -19,7 +19,7 @@ class Game extends React.Component {
             heroLevel: 1,
             heroLife: 4,
             heroCurrentLife: 4,
-            heroStrength:4,
+            heroStrength:2,
             heroXp: 0,
             cX: 0,
             cY: 250,
@@ -116,7 +116,7 @@ class Game extends React.Component {
         let monsterImg = new Image();
         monsterImg.src = imgs[1];
 
-        let monstersAmount = Math.ceil(Math.random()*3)+Math.floor(this.state.heroLevel/2);
+        let monstersAmount = Math.ceil(Math.random()*5);
 
         let monstersArr =[];
 
@@ -263,7 +263,7 @@ class Game extends React.Component {
                 this.setState({
                     heroLevel: this.state.heroLevel + 1,
                     heroStrength: this.state.heroStrength +1,
-                    heroXP: 0
+                    heroXp: 0
                 }, ()=>{
                     this.setState({
                         heroCurrentLife: this.state.heroLife
@@ -273,7 +273,7 @@ class Game extends React.Component {
                 this.setState({
                     heroLevel: this.state.heroLevel + 1,
                     heroLife: this.state.heroLife + 1,
-                    heroXP: 0
+                    heroXp: 0
 
                 }, ()=>{
                     this.setState({
@@ -286,12 +286,12 @@ class Game extends React.Component {
 
     componentDidMount(){
         this.gameInterval = setInterval(()=>{
-            if(this.state.monsters.length === 0){
+            if(this.state.monsters.length < 1){
 
                 this.drawMonsters();
                 this.heroLevelUp()
 
-                if(this.state.heroCurrentLife ===0){
+                if(this.state.heroCurrentLife <= 0){
                     alert("GameOver")
                 }
             }
@@ -305,6 +305,8 @@ class Game extends React.Component {
 
 
         document.addEventListener("keydown", (e)=> {
+
+          //  requestAnimationFrame(this.move);  - wywoluje blad w funkcji move
 
             if(e.keyCode === 40&&!this.state.detectionDown && !this.state.detectMonster){
                 //w dol
@@ -381,7 +383,9 @@ class Header extends React.Component {
     }
     render(){
         return(
-            <div className="header"></div>
+            <div className="header">
+                <span>Dwarf vs. Dragons</span>
+            </div>
         )
     }
 };

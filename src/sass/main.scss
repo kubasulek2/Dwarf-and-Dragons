@@ -14,6 +14,7 @@ body{
   height: 100%;
   width: 100%;
   background-color: bisque;
+
  /* display: flex;
   flex-wrap: wrap;*/
 
@@ -55,6 +56,9 @@ h1{
 .wrapper{
   display: flex;
   height: 740px;
+  width: 1406px;
+  margin: 0 auto;
+
 }
 
 .loadscreen{
@@ -63,4 +67,11 @@ h1{
   width: 100%;
   height: 100%;
   background-color: dimgrey;
+}
+
+.header span{
+  margin: 10px 0px 0px 50px;
+  font-size: 80px;
+  color: rgb(138,7,7);
+  font-weight: bold;
 }
