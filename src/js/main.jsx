@@ -18,6 +18,7 @@ class Game extends React.Component {
             heroName: '',
             heroLevel: 1,
             heroLife: 4,
+            heroCurrentLife: 4,
             heroStrength:4,
             heroXp: 0,
             cX: 0,
@@ -77,8 +78,10 @@ class Game extends React.Component {
 
     fight = ()=>{
         let ctx = this.canvas.getContext('2d');
+        let monsterStrength = Math.floor(this.state.heroLevel/2);
+        console.log(monsterStrength);
         let heroThrow = Math.ceil(Math.random()*10+this.state.heroStrength);
-        let monsterThrow =  Math.ceil(Math.random()*10);
+        let monsterThrow =  Math.ceil(Math.random()*10)+ monsterStrength;
         let positionX = this.state.detectedMonster.positionX;
         let positionY = this.state.detectedMonster.positionY;
 
@@ -88,8 +91,9 @@ class Game extends React.Component {
         })
 
         if(heroThrow > monsterThrow){
-            ctx.clearRect(positionX, positionY, 80, 80)
-            alert("Wygrałeś walkę, zdobywasz doświadczenie");
+            ctx.clearRect(positionX, positionY, 80, 80);
+            alert("Wygrałeś walkę z potworem o sile: "+monsterStrength+ ", zdobywasz doświadczenie");
+            console.log('');
             this.setState({
                 heroXp: this.state.heroXp+50,
                 monsters: this.state.monsters.filter((e)=>{
@@ -97,9 +101,9 @@ class Game extends React.Component {
                 })
             })
         }else{
-            alert("Przegrałeś walke, tracisz punkt życia");
+            alert("Przegrałeś walke z potworem o sile:"+monsterStrength+ ", tracisz punkt życia");
             this.setState({
-                heroLife: this.state.heroLife -1
+                heroCurrentLife: this.state.heroCurrentLife -1
             })
         }
 
@@ -251,19 +255,30 @@ class Game extends React.Component {
     }
 
     heroLevelUp(){
-        if(this.state.heroXp >= 200 + this.state.heroLevel*100){
+        if(this.state.heroXp >=  100 + this.state.heroLevel*100){
             alert("Zdobywasz poziom");
             let chooseBenefit = prompt('Choose: "Str" or "Life"' );
 
             if(chooseBenefit === "Str"){
                 this.setState({
                     heroLevel: this.state.heroLevel + 1,
-                    heroStrength: this.state.heroStrength +1
+                    heroStrength: this.state.heroStrength +1,
+                    heroXP: 0
+                }, ()=>{
+                    this.setState({
+                        heroCurrentLife: this.state.heroLife
+                    })
                 })
             }else if(chooseBenefit === "Life"){
                 this.setState({
                     heroLevel: this.state.heroLevel + 1,
-                    heroLife: this.state.heroLife + 1
+                    heroLife: this.state.heroLife + 1,
+                    heroXP: 0
+
+                }, ()=>{
+                    this.setState({
+                        heroCurrentLife: this.state.heroLife
+                    })
                 })
             }
         }
@@ -275,6 +290,10 @@ class Game extends React.Component {
 
                 this.drawMonsters();
                 this.heroLevelUp()
+
+                if(this.state.heroCurrentLife ===0){
+                    alert("GameOver")
+                }
             }
         },50);
 
@@ -348,7 +367,7 @@ class Sidebar extends React.Component {
             <div className="sidebar">
                 <h1>Name: {this.props.info.heroName}</h1>
                 <h1>Level: {this.props.info.heroLevel}</h1>
-                <h1>Life: {this.props.info.heroLife}</h1>
+                <h1>Life: {this.props.info.heroCurrentLife}</h1>
                 <h1>Strength: {this.props.info.heroStrength}</h1>
                 <h1>Xp: {this.props.info.heroXp}</h1>
             </div>
