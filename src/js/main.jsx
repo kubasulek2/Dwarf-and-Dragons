@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom';
 import { createStore } from 'redux';
 import { connect, Provider } from 'react-redux';
 require('../sass/main.scss');
-//const music = require('../music/Tribal Ritual.wav')
 import imgs from './images'
-
+import music from '../music/soundtrack.mp3'
+//lub
+//const music = require('../music/soundtrack.mp3');
 
 class Game extends React.Component {
     constructor(props){
@@ -381,6 +382,17 @@ class Header extends React.Component {
 
 
 document.addEventListener("DOMContentLoaded", function () {
+
+
+    const myAudio = new Audio();
+    myAudio.src = music;
+    myAudio.addEventListener('ended', function() {
+        this.currentTime = 0;
+        this.play();
+    }, false);
+    myAudio.play();
+
+
 
     ReactDOM.render(
         <Game/>,
