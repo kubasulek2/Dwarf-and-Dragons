@@ -12,7 +12,7 @@ class Game extends React.Component {
     constructor(props){
         super(props);
         this.state ={
-            gameLoader: true,
+            gameLoader: false,
             monsters:[],
             detectedMonster:{positionX: 0, positionY: 0},
             heroName: '',
@@ -88,7 +88,7 @@ class Game extends React.Component {
 
         this.setState({
             detectMonster: false,
-        })
+        });
 
         if(heroThrow > monsterThrow){
             ctx.clearRect(positionX, positionY, 80, 80);
@@ -286,14 +286,18 @@ class Game extends React.Component {
 
     componentDidMount(){
         this.gameInterval = setInterval(()=>{
+            console.log('dzialem');
             if(this.state.monsters.length < 1){
 
                 this.drawMonsters();
                 this.heroLevelUp()
+            }
 
-                if(this.state.heroCurrentLife <= 0){
-                    alert("GameOver")
-                }
+            if(this.state.heroCurrentLife <= 0){
+                alert("GameOver")
+                this.setState({
+                    heroCurrentLife: this.state.heroLife
+                })
             }
         },50);
 
@@ -384,7 +388,7 @@ class Header extends React.Component {
     render(){
         return(
             <div className="header">
-                <span>Dwarf vs. Dragons</span>
+                <span>Dwarf and Dragons</span>
             </div>
         )
     }
